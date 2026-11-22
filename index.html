@@ -147,11 +147,7 @@ th.x{border-bottom:1px solid var(--line)}
   <div class="tw"><table id="t3"><thead><tr></tr></thead><tbody></tbody></table></div>
   <div class="acts"><button class="add addrow" data-t="t3">+ 활동 행 추가</button><button class="add addcol" data-t="t3">+ 열 추가</button></div>
 
-  <h2>4. 역량 강화 연수 계획</h2>
-  <div class="tw"><table id="t4"><thead><tr></tr></thead><tbody></tbody></table></div>
-  <div class="acts"><button class="add addrow" data-t="t4">+ 연수 행 추가</button><button class="add addcol" data-t="t4">+ 열 추가</button></div>
-
-  <h2>5. 기대 효과 및 성찰</h2>
+  <h2>4. 기대 효과 및 성찰</h2>
   <div class="kv"><span>개인 전문성 향상</span><textarea></textarea></div>
   <div class="kv"><span>학생 교육적 성장</span><textarea></textarea></div>
   <div class="kv"><span>학교·지역 교육혁신</span><textarea></textarea></div>
@@ -163,15 +159,13 @@ th.x{border-bottom:1px solid var(--line)}
 <script>
 const KEY='aiedap-plan-v1';
 const cfg={
-  t3:{h:['영역','추진 과제','세부 활동 내용','추진 시기','목표 및 산출물'],w:['11%','20%','','11%',''],k:['area','task']},
-  t4:{h:['연수 유형','연수명','연수 기관','이수 시간','참여 시기','기대 역량'],w:['11%','','','9%','11%','']}
+  t3:{h:['영역','추진 과제','세부 활동 내용','추진 시기','목표 및 산출물'],w:['11%','20%','','11%',''],k:['area','task']}
 };
 // 예시(희미한 글). 영역 이름만 실제 값.
 const seed={t3:[
  ['교육실천','AI 융합수업 설계모형 심화','AI 활용 수업 5차시 설계·실행','1학기','수업 지도안 5건, 학생 반응 분석'],
  ['교육확산','AI 융합수업 사례발표 및 공모전','AI 수업 사례 발표 및 교내외 공유','2학기','발표 자료, 공모전 참가 결과'],
- ['','','','',''],['','','','',''],['','','','',''],['','','','','']],
-t4:[['교육 실천','AI 융합수업설계 심화 전문성 강화 연수','AIEDAP 호남권역 사업단','15시간','7월','AI 융합 수업 설계 및 적용 능력']]};
+ ['','','','',''],['','','','',''],['','','','',''],['','','','','']]};
 // 영역별 추진 과제 (CPD 체계 로드맵 기준): 영역 → [그룹, 과제들]
 const OPT={
  '교육실천':[['원격 연수',['중앙교육연수원 AI융합수업 기초']],
@@ -274,7 +268,7 @@ const tableData=id=>({
   r:$$('#'+id+' tbody tr').map(tr=>[...tr.querySelectorAll('textarea,select')].map(t=>t.value)),
   p:$$('#'+id+' tbody tr').map(tr=>[...tr.querySelectorAll('textarea,select')].map(t=>t.placeholder||''))  // 희미한 예시 글도 함께 저장
 });
-const snapshot=()=>({inputs:inputs.map(i=>i.value),kvs:kvs.map(t=>t.value),t3:tableData('t3'),t4:tableData('t4')});
+const snapshot=()=>({inputs:inputs.map(i=>i.value),kvs:kvs.map(t=>t.value),t3:tableData('t3')});
 
 let timer;
 function save(){
@@ -287,7 +281,7 @@ function save(){
 function fill(s){
   inputs.forEach((i,n)=>i.value=s.inputs?.[n]||'');
   kvs.forEach((t,n)=>t.value=s.kvs?.[n]||'');
-  ['t3','t4'].forEach(id=>{
+  ['t3'].forEach(id=>{
     let d=s[id];
     if(Array.isArray(d))d={h:id==='t3'?OLD_T3:cfg[id].h,r:d};           // 이전 저장 형식
     d=d||{h:cfg[id].h,r:[]};
@@ -302,9 +296,8 @@ function fill(s){
 function load(){
   let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   if(s){fill(s);return}
-  ['t3','t4'].forEach(id=>initHead(id,cfg[id].h,cfg[id].w,cfg[id].k));
+  ['t3'].forEach(id=>initHead(id,cfg[id].h,cfg[id].w,cfg[id].k));
   seed.t3.forEach(r=>addRow('t3',r.map((p,i)=>cfg.t3.k[i]?{v:p}:{p})));
-  seed.t4.forEach(r=>addRow('t4',r.map(p=>({p}))));
   kvs.forEach(grow);
 }
 load();
