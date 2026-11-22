@@ -229,7 +229,8 @@ function initHead(id,h,w){
 }
 const tableData=id=>({
   h:$$('#'+id+' thead th:not(.x) input').map(i=>i.value),
-  r:$$('#'+id+' tbody tr').map(tr=>[...tr.querySelectorAll('textarea')].map(t=>t.value))
+  r:$$('#'+id+' tbody tr').map(tr=>[...tr.querySelectorAll('textarea')].map(t=>t.value)),
+  p:$$('#'+id+' tbody tr').map(tr=>[...tr.querySelectorAll('textarea')].map(t=>t.placeholder))  // 희미한 예시 글도 함께 저장
 });
 const snapshot=()=>({inputs:inputs.map(i=>i.value),kvs:kvs.map(t=>t.value),t3:tableData('t3'),t4:tableData('t4')});
 
@@ -250,7 +251,8 @@ function fill(s){
     d=d||{h:cfg[id].h,r:[]};
     const same=d.h.length===cfg[id].h.length&&d.h.every((x,i)=>x===cfg[id].h[i]);
     initHead(id,d.h,same?cfg[id].w:null);
-    d.r.forEach(r=>addRow(id,r.map(v=>({v}))));
+    // 예시 글: 저장된 것 우선, 이전 형식이면 기본 예시를 행 순서대로 사용
+    d.r.forEach((r,ri)=>addRow(id,r.map((v,ci)=>({v,p:d.p?.[ri]?.[ci]??(same?seed[id][ri]?.[ci]:undefined)}))));
   });
   kvs.forEach(grow);
 }
